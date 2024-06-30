@@ -1,5 +1,5 @@
-# Privocia-Core
-The core restful APIs for Privocia.
+# Privocia-APIs
+The core restful APIs for Retrieval Orchestration for Privocia.
 
 ## Setup
 
