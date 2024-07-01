@@ -49,11 +49,11 @@ def get_llm_provider() -> LLMProvider:
             )
 
 
-async def perform_search(result: ResultSchema) -> ResponseSchema:
+async def perform_generation(result: ResultSchema) -> ResponseSchema:
     llm_provider = get_llm_provider()
 
     try:
-        generated_response = await llm_provider.generate(query)
+        generated_response = await llm_provider.generate(result.query, result)
 
         return generated_response
     except Exception:
