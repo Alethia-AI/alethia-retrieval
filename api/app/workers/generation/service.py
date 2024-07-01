@@ -4,10 +4,10 @@ import os
 from dotenv import load_dotenv
 from fastapi import HTTPException
 
-from ....schema.search import ResponseSchema
-from .providers.base import GenProvider
-from .providers.openai import OpenAIGenProvider
-from .providers.anthropic import AnthropicGenProvider
+from ...schema.search import ResponseSchema, ResultSchema
+from .providers.base import LLMProvider
+from .providers.openai import OpenAILLMProvider
+from .providers.anthropic import AnthropicLLMProvider
 
 load_dotenv()
 
@@ -32,19 +32,31 @@ def get_anthropic_api_key():
     return anthropic_api_key
 
 
-def get_search_provider() -> SearchProvider:
-    tavily_api_key = get_tavily_api_key()
-    return TavilySearchProvider(tavily_api_key)
+def get_llm_provider() -> LLMProvider:
+    llm_provider = os.getenv("LLM_PROVIDER")
+
+    match llm_provider:
+        case "openai":
+            openai_api_key = get_openai_api_key()
+            return OpenAILLMProvider(openai_api_key)
+        case "serper":
+            anthropic_api_key = get_anthropic_api_key()
+            return AnthropicLLMProvider(anthropic_api_key)
+        case _:
+            raise HTTPException(
+                status_code=500,
+                detail="Invalid search provider. Please set the SEARCH_PROVIDER environment variable to either 'searxng', 'tavily', 'serper', or 'bing'.",
+            )
 
 
-def perform_search(api_key: str, query: str) -> ResponseSchema:
-    search_provider = get_search_provider()
+async def perform_search(result: ResultSchema) -> ResponseSchema:
+    llm_provider = get_llm_provider()
 
     try:
-        web_response = search_provider.search(api_key, query)
+        generated_response = await llm_provider.generate(query)
 
-        return web_response
+        return generated_response
     except Exception:
         raise HTTPException(
-            status_code=500, detail="There was an error while searching."
+            status_code=500, detail="There was an error while generating response."
         )
