@@ -47,7 +47,7 @@ class OpenAILLMProvider(LLMProvider):
             stream=False
         )
         response = output.choices[0].message.content
-        return response_str
+        return response
     
     # TODO:: Implement post processing.
     async def post_process(self, response: str, results: ResultSchema) -> ResponseSchema:

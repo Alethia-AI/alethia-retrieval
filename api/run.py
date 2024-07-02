@@ -1,7 +1,7 @@
 # main.py
 import uvicorn
 
-HOST_NAME = "0.0.0.0"
+HOST_NAME = "127.0.0.1"
 PORT = 8080
 
 if __name__ == "__main__":

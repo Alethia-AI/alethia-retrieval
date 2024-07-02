@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 
-from .workers.clip import encode_image
+from ....workers.clip.encode import encode_image
 
 
 app = FastAPI()

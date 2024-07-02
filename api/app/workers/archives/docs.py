@@ -2,29 +2,30 @@
 import re
 from typing import Union
 
+from fastapi import HTTPException
+
 from app.dependencies import supabase
-from ..users.users import user_exists
-from ...schema.archive import Doc, Chunk
+
+from ...schema.archives.docs import Doc, Chunk
 from ..embeddings.embeddings import build_embeddings
 
 MIN_NUM_WORDS_PER_CHUNK = 20
 
 # DOC HANDLERS:
-def create_doc(doc: Doc, text: str):
+def create_doc(doc: Doc, content: str):
     try:
         # Check if url already exists for the user
         # FIXME: Should update instead? What if the process fails after inserting url and title?
-        if doc_exists("url", doc.url, doc.api_key):
-            print(f"URL already exists: {doc.url}")
+        if doc_exists("title", doc.title, doc.api_key):
             return False
 
         # Add user to users table
         res = supabase.from_("docs") \
             .insert({
-                # url_id will be generated automatically
+                # doc_id will be generated automatically
                 "api_key": doc.api_key,
-                "url": doc.url,
                 "title": doc.title,
+                "tags": doc.tags
                 }) \
             .execute()
 
@@ -34,7 +35,7 @@ def create_doc(doc: Doc, text: str):
             return False
 
         doc_id = res.data[0]["doc_id"]
-        chunks = text2chunks(text)
+        chunks = text2chunks(content)
 
         embeddings = build_embeddings(doc.title, chunks)
 
@@ -52,7 +53,7 @@ def create_doc(doc: Doc, text: str):
                         "api_key": doc.api_key,
                         "doc_id": doc_id,
                         "text": chunk,
-                        "embedding": list(embeddings[i][1])
+                        "embeddings": list(embeddings[i][1])
                         }) \
                     .execute()
 
@@ -64,9 +65,10 @@ def create_doc(doc: Doc, text: str):
 
         return True
 
-    except Exception as e:
-        print(f"Failed to create doc: {str(e)}")
-        return False
+    except Exception:
+        raise HTTPException(
+            status_code=500, detail="There was an error while archiving text."
+        )
 
 def text2chunks(text):
     chunks = []
@@ -127,14 +129,14 @@ def get_docs(api_key: str, doc_id: Union[int, None] = None):
     try:
         if doc_id is None:
             res = supabase.from_("docs") \
-                .select("doc_id", "url", "title") \
+                .select("doc_id", "title", "tags") \
                 .eq("api_key", api_key) \
                 .execute()
             print(res.data)
             return res.data
         else:
             res = supabase.from_("docs") \
-                .select("doc_id", "url", "title") \
+                .select("doc_id", "title", "tags") \
                 .eq("api_key", api_key) \
                 .eq("doc_id", doc_id) \
                 .execute()

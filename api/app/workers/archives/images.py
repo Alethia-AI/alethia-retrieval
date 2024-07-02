@@ -1,7 +1,7 @@
 
 from app.dependencies import supabase
 from ..users.users import user_exists
-from ...schema.archive import Image, Pixel
+from ...schema.archive.docs import Image, Pixel
 
 
 # IMAGE HANDLERS:
