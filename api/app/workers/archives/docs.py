@@ -122,6 +122,7 @@ def chunk_exists(key: str, value: str, api_key: str = None):
     return len(res.data) > 0
 
 def get_doc(api_key: str, doc_id: int):
+    print(f"Getting doc {doc_id}")
     res = get_docs(api_key, doc_id)
     return None if res is None else res[0]
 

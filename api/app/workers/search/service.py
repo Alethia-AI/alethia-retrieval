@@ -15,7 +15,7 @@ from app.schema.search import ResultSchema, ResponseSchema, queryMetadata
 
 
 METRIC = "inner_product"
-# METRIC = "cosine"
+#METRIC = "cosine"
 
 #redis_url = os.getenv("REDIS_URL")
 #redis_client = redis.Redis.from_url(redis_url) if redis_url else None
@@ -37,7 +37,9 @@ def respond_to_search(queryMetadata_: queryMetadata) -> ResponseSchema:
                 web_response: ResponseSchema = perform_search(queryMetadata_.query)
                 query_response = web_response
             elif queryMetadata_.query_level == 1:
+                print("archive_search")
                 embedding = prompt_embedding(queryMetadata_.query)
+                print("embedding")
                 query_response = perform_archive_search(queryMetadata_.api_key, embedding, metric=METRIC)
                 print("respond_to_search_complete")
             else:

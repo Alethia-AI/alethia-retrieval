@@ -68,6 +68,7 @@ def jsonify_results(query_results: List[ResultSchema]):
                 "rank": result.rank,
                 "title": result.title,
                 "URL": result.url,
+                "text_id": result.text_id,
                 "text": result.text,
                 "relevance_score": result.relevance_score,
             }
