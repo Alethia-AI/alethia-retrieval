@@ -1,11 +1,11 @@
 
 from .archive_search import perform_archive_search
-from ..embeddings.embeddings import prompt_embedding
-from .web_search.web_service import perform_search
-from ...dependencies import supabase
-from .results import get_prev_query_id
+from ...embeddings.embeddings import prompt_embedding
+from ..web_search.web_service import perform_search
+from ....dependencies import supabase
+from ..utils import get_prev_query_id
 
-from ...schema.search import ResponseSchema
+from ....schema.search import ResponseSchema
 
 
 def perform_related_search(api_key: str, prompt: str, metric) -> ResponseSchema:

@@ -4,30 +4,29 @@ from pydantic.fields import Field
 from typing import List, Optional
 
 class queryMetadata(BaseModel):
+    query_id: Optional[int] = Field(default=None)
     query: str
-    query_order: int
-    max_results: int
     api_key: str
-    archive_id: Optional[int] = Field(default=None)
-    namespace_id: Optional[str] = Field(default=None)
+    query_level: int # 0 for web search, 1 for image search
     index_id: Optional[str] = Field(default=None)
+    namespace_id: Optional[str] = Field(default=None)
+    archive_id: Optional[str] = Field(default=None)
     use_cache: Optional[bool] = Field(default=True)
+    max_results: int = 3
 
     class Config:
         from_attributes = True
 
 
 class ResultSchema(BaseModel):
-    result_id: Optional[int] = Field(default=None)
-    index: int
-    relevance_score: Optional[float] = Field(default=None)
-    url_id: Optional[int] = Field(default=None)
-    url: str
+    result_id: Optional[int] = Field(default=None) # Primary key; set by the database
+    rank: int
+    relevance_score: float
     title: str
-    text_id: Optional[int] = Field(default=None)
+    url: Optional[str] = Field(default=None)
+    text_id: Optional[str] = Field(default=None)
     text: str
-    query_order: int
-    api_key: str
+    # Relate to the query_id in the queryMetadata:
     query_id: Optional[int] = Field(default=None)
 
 class ResponseSchema(BaseModel):

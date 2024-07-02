@@ -27,11 +27,12 @@ def get_search_provider() -> SearchProvider:
     return TavilySearchProvider(tavily_api_key)
 
 
-def perform_search(api_key: str, query: str) -> ResponseSchema:
+def perform_search(query: str) -> ResponseSchema:
+    print("perform_search")
     search_provider = get_search_provider()
 
     try:
-        web_response = search_provider.search(api_key, query)
+        web_response = search_provider.search(query)
 
         return web_response
     except Exception:

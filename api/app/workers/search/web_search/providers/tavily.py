@@ -9,7 +9,7 @@ class TavilySearchProvider(SearchProvider):
     def __init__(self, tavily_api_key: str):
         self.tavily = TavilyClient(tavily_api_key)
 
-    def search(self, api_key: int, query: str) -> ResponseSchema:
+    def search(self, query: str) -> ResponseSchema:
         response = self.tavily.search(
             query=query,
             search_depth="basic",
@@ -23,13 +23,11 @@ class TavilySearchProvider(SearchProvider):
         print(f"Searching for: {query}")
         results = [
             ResultSchema(
-                url=result['url'],
-                title=result['title'],
-                text=result['content'],
-                query_order=0,
-                api_key=api_key,
-                index=i,
+                rank=i,
                 relevance_score=result['score'], # FIXME: Probably not in response
+                title=result['title'],
+                url=result['url'],
+                text=result['content'],
                 )
                 for i, result in enumerate(response["results"])
                 ]

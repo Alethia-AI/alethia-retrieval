@@ -1,6 +1,6 @@
-from ...schema.search import ResultSchema, ResponseSchema
-from ...workers.archives.docs import get_doc
-from ...dependencies import supabase
+from ....schema.search import ResultSchema, ResponseSchema
+from ...archives.docs import get_doc
+from ....dependencies import supabase
 
 from typing import List
 
