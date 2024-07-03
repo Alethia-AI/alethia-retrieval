@@ -6,7 +6,6 @@ from typing import List
 
 def perform_archive_search(api_key, embedding, metric):
     # Search the archive
-    print(f"Searching archive with embedding")
     matches = search_embeddings(api_key, embedding, metric)
     return ResponseSchema(results=archive_results(api_key, matches))
 
@@ -31,14 +30,12 @@ def search_embeddings(api_key, embedding, metric, top_k=5, min_similarity_score=
 Given similar embeddings from the vector database, return the results.
 """
 def archive_results(api_key, matches) -> list[ResultSchema]:
-    print(f"Getting results for {len(matches)} matches")
     results = []
     for i, match in enumerate(matches):
         doc = get_doc(api_key, match['doc_id'])
         if doc is None:
             print(f"Doc not found for {match['doc_id']}")
             return []
-        print(f"Doc: {doc}")
         result = ResultSchema(
             rank=i,
             relevance_score=match['similarity_score'],
@@ -51,6 +48,5 @@ def archive_results(api_key, matches) -> list[ResultSchema]:
             result.url = match['url']
         if 'doc_id' in match:
             result.text_id = match['doc_id']
-        print(f"Result: {result}")
         results.append(result)
     return results

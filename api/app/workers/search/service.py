@@ -31,17 +31,13 @@ def respond_to_search(queryMetadata_: queryMetadata) -> ResponseSchema:
         #    cached_json = json.loads(json.loads(cached_results.decode("utf-8")))  # type: ignore
         #    return ResponseSchema(**cached_json)
         try:
-            print("respond_to_search")
             query_response: ResponseSchema = None
             if queryMetadata_.query_level == 0:
                 web_response: ResponseSchema = perform_search(queryMetadata_.query)
                 query_response = web_response
             elif queryMetadata_.query_level == 1:
-                print("archive_search")
                 embedding = prompt_embedding(queryMetadata_.query)
-                print("embedding")
                 query_response = perform_archive_search(queryMetadata_.api_key, embedding, metric=METRIC)
-                print("respond_to_search_complete")
             else:
                 raise HTTPException(
                         status_code=500, detail="Invalid query order: 0 is for web search and 1 is for local archive search."
