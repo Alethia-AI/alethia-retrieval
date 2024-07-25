@@ -1,4 +1,4 @@
-# `privocia-retrieval`
+# `alethia-retrieval`
 
 ## Description
-The core repository for the Privocia Retrieval Project.
+The core repository for the Alethia Retrieval Project.
